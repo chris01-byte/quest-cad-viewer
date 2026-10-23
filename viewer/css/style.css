@@ -30,6 +30,7 @@ html, body {
   height: 100%;
   display: block;
   touch-action: none;
+  z-index: 0; /* UI layers have explicit z-index, so the stacking does not depend on DOM order */
 }
 
 h1, h2 { margin: 0; font-weight: 600; }
@@ -59,6 +60,7 @@ button.primary:hover:not(:disabled) { background: #5a9dff; }
 button.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 
 .topbar {
+  z-index: 10;
   position: fixed;
   top: 0; left: 0; right: 0;
   display: flex;
@@ -72,6 +74,7 @@ button.active { background: var(--accent); border-color: var(--accent); color: v
 .topbar .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
 .panel {
+  z-index: 10;
   position: fixed;
   top: 56px;
   left: 14px;
@@ -103,6 +106,7 @@ button.active { background: var(--accent); border-color: var(--accent); color: v
 
 .count { font-weight: 400; letter-spacing: 0; text-transform: none; }
 .row { display: flex; gap: 6px; margin-bottom: 8px; }
+.row.wrap { flex-wrap: wrap; }
 .row button { padding: 4px 10px; font-size: 12px; }
 section[hidden] { display: none; }
 
@@ -142,6 +146,7 @@ input[type="search"][hidden] { display: none; }
 .measure-list .del { grid-column: 3; grid-row: 1; padding: 2px 8px; }
 
 .hint {
+  z-index: 10;
   position: fixed;
   left: 50%;
   top: 50%;
@@ -158,6 +163,7 @@ input[type="search"][hidden] { display: none; }
 .hint-title { font-size: 18px; font-weight: 600; color: var(--text) !important; }
 
 .toast {
+  z-index: 20;
   position: fixed;
   left: 50%;
   bottom: 22px;
@@ -174,6 +180,7 @@ input[type="search"][hidden] { display: none; }
 .toast.warn { background: #3b2f14; border-color: var(--warn); color: #ffe7b0; }
 
 .drop-overlay {
+  z-index: 30;
   position: fixed;
   inset: 0;
   display: grid;

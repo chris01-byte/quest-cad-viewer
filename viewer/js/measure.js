@@ -351,7 +351,8 @@ export class MeasureTool {
 
   // ------------------------------------------------------------------ hover preview + input
 
-  #setHover(hit) {
+  /** Show the hover marker and rubber band for a pick result, or clear it with null. */
+  setHover(hit) {
     if (!hit) return this.#clearHover();
     this.hover = hit;
     this.viewer.requestRender();
@@ -414,7 +415,7 @@ export class MeasureTool {
       const { clientX, clientY } = e;
       requestAnimationFrame(() => {
         hoverQueued = false;
-        if (this.active) this.#setHover(this.pickScreen(clientX, clientY));
+        if (this.active) this.setHover(this.pickScreen(clientX, clientY));
       });
     });
     canvas.addEventListener('pointerleave', () => this.#clearHover());

@@ -8,10 +8,14 @@ const FILTER_FROM = 12; // show the filter field for lists longer than this
 /** DOM glue: file selection (dialog + drag & drop), status messages and the info panel. */
 export class UI {
   /** @param {Object} handlers callbacks into the app, see the assignments below */
-  constructor({ onFiles, onPartVisible, onMeasureToggle, onMeasureClear, onMeasureRemove, onOnlyVertices }) {
+  constructor({ onFiles, onPartVisible, onMeasureToggle, onMeasureClear, onMeasureRemove, onOnlyVertices, onResetView, onActualSize, onStartXR }) {
     this.onFiles = onFiles;
     this.onPartVisible = onPartVisible;
     this.onMeasureRemove = onMeasureRemove;
+    $('btn-reset-view').addEventListener('click', onResetView);
+    $('btn-actual-size').addEventListener('click', onActualSize);
+    $('btn-ar').addEventListener('click', () => onStartXR('ar'));
+    $('btn-vr').addEventListener('click', () => onStartXR('vr'));
     $('btn-measure').addEventListener('click', onMeasureToggle);
     $('btn-measure-clear').addEventListener('click', onMeasureClear);
     $('chk-vertices').addEventListener('change', (e) => onOnlyVertices(e.target.checked));
@@ -80,6 +84,11 @@ export class UI {
     $('info-unit').textContent = model.sourceUnit;
     $('hint').hidden = true;
     $('sec-measure').hidden = false;
+    $('sec-view').hidden = false;
+    for (const id of ['btn-ar', 'btn-vr']) {
+      $(id).disabled = false;
+      $(id).title = '';
+    }
     this.updateModelInfo(model);
   }
 
@@ -98,6 +107,15 @@ export class UI {
     const warn = $('info-warn');
     warn.hidden = visibleTris <= TRIANGLE_TARGET;
     warn.textContent = `Achtung: ${fmtInt(visibleTris)} Dreiecke liegen über dem Zielwert von ${fmtInt(TRIANGLE_TARGET)}. Auf der Quest kann das ruckeln – mit dem Konverter verkleinern.`;
+  }
+
+  /** Show the AR/VR buttons the browser supports and explain when none is available. */
+  setXRSupport({ ar, vr }) {
+    $('btn-ar').hidden = !ar;
+    $('btn-vr').hidden = !vr;
+    $('xr-note').textContent = ar || vr
+      ? 'Dateien vor dem Start hier öffnen: In AR/VR gibt es keinen Datei-Dialog. Im Headset steht das Modell 1:1 vor dir, Teile, Messen und 1:1 bedienst du am Panel.'
+      : 'AR/VR ist in diesem Browser nicht verfügbar (Desktop-Modus). Auf der Quest 3 im Quest-Browser öffnen.';
   }
 
   /** Measure section: mode button, status line and the list of finished measurements. */

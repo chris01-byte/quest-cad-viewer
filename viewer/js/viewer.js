@@ -15,6 +15,7 @@ export class Viewer {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setClearColor(BACKGROUND, 1);
+    this.renderer.xr.enabled = true;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(50, 1, 0.01, 50);
@@ -35,18 +36,25 @@ export class Viewer {
 
     this.listeners = new Set(); // called after every rendered frame request, e.g. to update overlays
     this.renderRequested = true;
-    this.renderer.setAnimationLoop(() => this.#tick());
+    this.renderer.setAnimationLoop((time, frame) => this.#tick(frame));
     new ResizeObserver(() => this.#resize()).observe(canvas);
     this.#resize();
   }
 
-  /** Register a callback that runs right before each rendered frame. */
+  /** Register a callback that runs right before each rendered frame (gets the XRFrame inside XR). */
   onBeforeRender(fn) {
     this.listeners.add(fn);
   }
 
   requestRender() {
     this.renderRequested = true;
+  }
+
+  /** AR: transparent background and no floor grid, so the real room shows through. VR and desktop: opaque. */
+  setPassthrough(on) {
+    this.renderer.setClearColor(BACKGROUND, on ? 0 : 1);
+    this.grid.visible = !on;
+    this.requestRender();
   }
 
   /** The camera that is really used for rendering: the head pose inside an XR session. */
@@ -62,10 +70,10 @@ export class Viewer {
     return { x: rect.left + ((p.x + 1) / 2) * rect.width, y: rect.top + ((1 - p.y) / 2) * rect.height };
   }
 
-  #tick() {
+  #tick(frame) {
     if (!this.renderRequested && !this.renderer.xr.isPresenting) return;
     this.renderRequested = false;
-    for (const fn of this.listeners) fn();
+    for (const fn of this.listeners) fn(frame);
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -124,6 +132,22 @@ export class Viewer {
     this.modelRoot.quaternion.identity();
     this.modelRoot.add(model.root);
     this.frameModel();
+  }
+
+  /**
+   * Move the camera so that the model's centre plane appears at real size on a 96 dpi screen
+   * (1 CSS px = 0.2646 mm). Only an approximation: real screens and OS scaling differ.
+   */
+  viewActualSize() {
+    const metresPerPx = 0.0254 / 96;
+    const focalPx = (this.canvas.clientHeight / 2) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2);
+    const dist = focalPx * metresPerPx;
+    const dir = this.camera.position.clone().sub(this.controls.target).normalize();
+    this.camera.position.copy(this.controls.target).addScaledVector(dir, dist);
+    this.camera.near = Math.min(this.camera.near, dist / 500);
+    this.camera.updateProjectionMatrix();
+    this.controls.update();
+    this.requestRender();
   }
 
   /** Fit camera and grid to the current model. */

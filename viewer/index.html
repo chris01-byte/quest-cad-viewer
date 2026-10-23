@@ -22,6 +22,8 @@
   <header class="topbar">
     <h1>Quest CAD Viewer</h1>
     <div class="actions">
+      <button id="btn-ar" type="button" class="primary" hidden disabled title="Zuerst ein Modell öffnen">AR starten</button>
+      <button id="btn-vr" type="button" hidden disabled title="Zuerst ein Modell öffnen">VR starten</button>
       <button id="btn-open" type="button" class="primary">Datei öffnen …</button>
       <input id="file-input" type="file" multiple hidden>
     </div>
@@ -50,6 +52,15 @@
       </div>
       <input id="parts-filter" type="search" placeholder="Teile filtern …" aria-label="Teile filtern" hidden>
       <ul id="part-list" class="part-list"></ul>
+    </section>
+
+    <section id="sec-view" hidden>
+      <h2>Ansicht</h2>
+      <div class="row wrap">
+        <button id="btn-reset-view" type="button">Ansicht zurücksetzen</button>
+        <button id="btn-actual-size" type="button" title="Zoomt so, dass das Modell auf einem 96-dpi-Bildschirm in Originalgröße erscheint. Bildschirme weichen ab, das ist nur eine Näherung.">1:1 (ca.)</button>
+      </div>
+      <p id="xr-note" class="note"></p>
     </section>
 
     <section id="sec-measure" hidden>

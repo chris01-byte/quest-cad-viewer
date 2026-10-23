@@ -47,6 +47,10 @@ Zusätzlich: ein eigener Export aus Fusion (z. B. ein Glied des 6-Achs-Roboterar
 | V1-20 | Messen: mitten auf eine Fläche klicken, weit weg von jeder Ecke | Punkt wird orange gesetzt (freier Flächenpunkt, nicht eingerastet), in der Messliste als Flächenpunkt gekennzeichnet | Desktop | ⏳ |
 | V1-21 | Messen: „Nur Eckpunkte“ einschalten, mitten auf eine Fläche klicken | kein Punkt wird gesetzt, Hinweis erscheint; nahe an einer Ecke funktioniert es | Desktop | ⏳ |
 | V1-22 | `last_2mio.stl` öffnen (per `samples/generate.py` erzeugt) | Dreiecksanzahl 2.002.224 und Warnung sichtbar, Drehen und Messen bleiben bedienbar | Desktop | ⏳ |
+| V1-23 | Desktop: „1:1 (ca.)“ drücken, Lineal an den Bildschirm halten | 100 mm am Modell erscheinen ungefähr 100 mm groß (Näherung über 96 dpi, Abweichung notieren); „Ansicht zurücksetzen“ stellt die Ausgangsansicht wieder her | Desktop | ⏳ |
+| V1-24 | Im Headset am Panel: Teile aus-/einblenden, „Messen“ an/aus, Messung mit ✕ löschen, „Nur Ecken“, „XR beenden“ | alle Funktionen des Desktop-Menüs sind im Panel erreichbar und wirken sofort | Quest | ⏳ |
+| V1-25 | Im Headset: Grip-Taste auf das Panel gerichtet drücken und bewegen | Panel folgt der Hand und bleibt dort stehen, das Modell bleibt unberührt | Quest | ⏳ |
+| V1-26 | Im Headset: „Zentrieren“ drücken, nachdem das Modell weggeschoben oder gekippt wurde | Modell steht wieder aufrecht, 0,7 m vor dem Gesicht, auf Tisch- bzw. Bodenhöhe | Quest | ⏳ |
 
 ### Konverter
 

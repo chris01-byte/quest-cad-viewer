@@ -34,13 +34,18 @@ export function startServer(dir = VIEWER_DIR) {
   }));
 }
 
-/** Opens the viewer; collects console errors and page errors in `errors`. */
-export async function openViewer({ viewport = { width: 1280, height: 800 } } = {}) {
+/** Opens the viewer; collects console errors and page errors in `errors`. With `emulateQuest` a Meta Quest 3 is emulated by IWER (window.__iwer = the XRDevice). */
+export async function openViewer({ viewport = { width: 1280, height: 800 }, emulateQuest = false } = {}) {
   const srv = await startServer();
   const browser = await chromium.launch({
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'],
   });
   const context = await browser.newContext({ viewport, locale: 'de-DE' });
+  if (emulateQuest) {
+    // Meta's Immersive Web Emulation Runtime (npm "iwer", dev dependency): a JS implementation of the WebXR API
+    const iwer = fs.readFileSync(require.resolve('iwer/build/iwer.js'), 'utf8');
+    await context.addInitScript(`${iwer}\n;(() => { const { XRDevice, metaQuest3 } = window.IWER; const d = new XRDevice(metaQuest3); d.installRuntime({ forceInstall: true }); window.__iwer = d; })();`);
+  }
   const page = await context.newPage();
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
