@@ -51,6 +51,18 @@
       <input id="parts-filter" type="search" placeholder="Teile filtern …" aria-label="Teile filtern" hidden>
       <ul id="part-list" class="part-list"></ul>
     </section>
+
+    <section id="sec-measure" hidden>
+      <h2>Messen <span id="measure-count" class="count"></span></h2>
+      <div class="row">
+        <button id="btn-measure" type="button" aria-pressed="false">Messen (M)</button>
+        <button id="btn-measure-clear" type="button" disabled>Alle löschen</button>
+      </div>
+      <label class="check"><input id="chk-vertices" type="checkbox"> Nur Eckpunkte</label>
+      <p id="measure-status" class="note status"></p>
+      <ul id="measure-list" class="measure-list"></ul>
+      <p class="note">Grün = Eckpunkt (rastet ein), orange = freier Flächenpunkt (ungenauer). Gemessen wird am Dreiecksnetz, Fusion bleibt die Referenz.</p>
+    </section>
   </aside>
 
   <div id="hint" class="hint">

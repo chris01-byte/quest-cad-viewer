@@ -128,6 +128,19 @@ input[type="search"][hidden] { display: none; }
 .part-list .tris { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .part-list li.off .name { color: var(--muted); text-decoration: line-through; }
 
+.check { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; cursor: pointer; }
+.check input { accent-color: var(--accent); }
+.note.status { color: var(--text); min-height: 1.4em; margin: 0 0 6px; }
+
+.measure-list { list-style: none; margin: 0; padding: 0; max-height: 30vh; overflow-y: auto; }
+.measure-list li { display: grid; grid-template-columns: 1.6em 1fr auto; gap: 0 8px; align-items: center; padding: 5px 6px; border-radius: 6px; }
+.measure-list li:hover { background: #252d39; }
+.measure-list .idx { color: var(--muted); font-variant-numeric: tabular-nums; }
+.measure-list .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+.measure-list .delta { grid-column: 2; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.measure-list .flag { grid-column: 2; color: var(--warn); font-size: 12px; }
+.measure-list .del { grid-column: 3; grid-row: 1; padding: 2px 8px; }
+
 .hint {
   position: fixed;
   left: 50%;

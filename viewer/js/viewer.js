@@ -49,6 +49,19 @@ export class Viewer {
     this.renderRequested = true;
   }
 
+  /** The camera that is really used for rendering: the head pose inside an XR session. */
+  activeCamera() {
+    return this.renderer.xr.isPresenting ? this.renderer.xr.getCamera() : this.camera;
+  }
+
+  /** Client (CSS pixel) position of a world-space point, for overlays and tests. */
+  worldToScreen(point) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.camera.updateMatrixWorld();
+    const p = point.clone().project(this.camera);
+    return { x: rect.left + ((p.x + 1) / 2) * rect.width, y: rect.top + ((1 - p.y) / 2) * rect.height };
+  }
+
   #tick() {
     if (!this.renderRequested && !this.renderer.xr.isPresenting) return;
     this.renderRequested = false;

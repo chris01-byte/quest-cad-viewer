@@ -66,6 +66,23 @@ export function countDrawnPixels(page) {
   });
 }
 
+/** Counts rendered pixels close to an RGB colour (overlay markers are unlit, so their colour is exact). */
+export function countColor(page, [r, g, b], tolerance = 24) {
+  return page.evaluate(([r, g, b, tol]) => {
+    const { viewer } = window.cadViewer;
+    const gl = viewer.renderer.getContext();
+    viewer.renderer.render(viewer.scene, viewer.camera);
+    const w = gl.drawingBufferWidth, h = gl.drawingBufferHeight;
+    const px = new Uint8Array(4 * w * h);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    let n = 0;
+    for (let i = 0; i < px.length; i += 4) {
+      if (Math.abs(px[i] - r) < tol && Math.abs(px[i + 1] - g) < tol && Math.abs(px[i + 2] - b) < tol) n++;
+    }
+    return n;
+  }, [r, g, b, tolerance]);
+}
+
 let failures = 0;
 export function check(name, ok, detail = '') {
   console.log(`${ok ? '  ok  ' : ' FAIL '} ${name}${detail ? `  (${detail})` : ''}`);

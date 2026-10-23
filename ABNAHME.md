@@ -44,6 +44,9 @@ Zusätzlich: ein eigener Export aus Fusion (z. B. ein Glied des 6-Achs-Roboterar
 | V1-17 | Eigener Fusion-Export (Roboterarm-Glied) laden | Maße stimmen mit Fusion überein | Quest | ⏳ |
 | V1-18 | Bildrate prüfen mit optimierter Roboterarm-Baugruppe | flüssig, kein sichtbares Ruckeln beim Kopfdrehen | Quest | ⏳ |
 | V1-19 | App auf der Quest installieren (PWA) | Icon in der App-Bibliothek, Start ohne Browser-Leiste | Quest | ⏳ |
+| V1-20 | Messen: mitten auf eine Fläche klicken, weit weg von jeder Ecke | Punkt wird orange gesetzt (freier Flächenpunkt, nicht eingerastet), in der Messliste als Flächenpunkt gekennzeichnet | Desktop | ⏳ |
+| V1-21 | Messen: „Nur Eckpunkte“ einschalten, mitten auf eine Fläche klicken | kein Punkt wird gesetzt, Hinweis erscheint; nahe an einer Ecke funktioniert es | Desktop | ⏳ |
+| V1-22 | `last_2mio.stl` öffnen (per `samples/generate.py` erzeugt) | Dreiecksanzahl 2.002.224 und Warnung sichtbar, Drehen und Messen bleiben bedienbar | Desktop | ⏳ |
 
 ### Konverter
 

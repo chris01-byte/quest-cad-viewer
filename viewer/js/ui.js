@@ -7,10 +7,14 @@ const FILTER_FROM = 12; // show the filter field for lists longer than this
 
 /** DOM glue: file selection (dialog + drag & drop), status messages and the info panel. */
 export class UI {
-  /** @param {{onFiles: (files: File[]) => void, onPartVisible: (ids: number[], visible: boolean) => void}} handlers */
-  constructor({ onFiles, onPartVisible }) {
+  /** @param {Object} handlers callbacks into the app, see the assignments below */
+  constructor({ onFiles, onPartVisible, onMeasureToggle, onMeasureClear, onMeasureRemove, onOnlyVertices }) {
     this.onFiles = onFiles;
     this.onPartVisible = onPartVisible;
+    this.onMeasureRemove = onMeasureRemove;
+    $('btn-measure').addEventListener('click', onMeasureToggle);
+    $('btn-measure-clear').addEventListener('click', onMeasureClear);
+    $('chk-vertices').addEventListener('change', (e) => onOnlyVertices(e.target.checked));
     this.toastTimer = null;
 
     const input = $('file-input');
@@ -75,6 +79,7 @@ export class UI {
     $('info-size').textContent = fmtBytes(files.reduce((sum, f) => sum + f.size, 0));
     $('info-unit').textContent = model.sourceUnit;
     $('hint').hidden = true;
+    $('sec-measure').hidden = false;
     this.updateModelInfo(model);
   }
 
@@ -93,6 +98,34 @@ export class UI {
     const warn = $('info-warn');
     warn.hidden = visibleTris <= TRIANGLE_TARGET;
     warn.textContent = `Achtung: ${fmtInt(visibleTris)} Dreiecke liegen über dem Zielwert von ${fmtInt(TRIANGLE_TARGET)}. Auf der Quest kann das ruckeln – mit dem Konverter verkleinern.`;
+  }
+
+  /** Measure section: mode button, status line and the list of finished measurements. */
+  renderMeasure(tool) {
+    const button = $('btn-measure');
+    button.classList.toggle('active', tool.active);
+    button.setAttribute('aria-pressed', String(tool.active));
+    $('measure-status').textContent = tool.status;
+    $('btn-measure-clear').disabled = tool.measurements.length === 0;
+    $('measure-count').textContent = tool.measurements.length ? `(${tool.measurements.length})` : '';
+
+    const list = $('measure-list');
+    list.replaceChildren();
+    tool.measurements.forEach((m, i) => {
+      const li = document.createElement('li');
+      li.dataset.id = m.id;
+      const idx = el('span', 'idx', String(i + 1));
+      const val = el('span', 'val', `${fmtMm(m.distance)} mm`);
+      const del = el('button', 'del', '✕');
+      del.type = 'button';
+      del.title = `Messung ${i + 1} löschen`;
+      del.setAttribute('aria-label', del.title);
+      del.addEventListener('click', () => this.onMeasureRemove(m.id));
+      const delta = el('span', 'delta', `Δ ${fmtMm(m.delta.x)} · ${fmtMm(m.delta.y)} · ${fmtMm(m.delta.z)}`);
+      li.append(idx, val, del, delta);
+      if (!m.snapA || !m.snapB) li.append(el('span', 'flag', 'Flächenpunkt, nicht eingerastet'));
+      list.append(li);
+    });
   }
 
   /** Build the part list for a model. Toggling calls onPartVisible; the list stays in sync with `visible`. */
@@ -142,6 +175,13 @@ export class UI {
     const ids = [...$('part-list').children].filter((li) => !li.hidden).map((li) => Number(li.dataset.id));
     this.onPartVisible(ids, visible);
   }
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  node.className = className;
+  node.textContent = text;
+  return node;
 }
 
 function hasFiles(e) {
