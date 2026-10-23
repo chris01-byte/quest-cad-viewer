@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 9 umgesetzt (Prüfkörper, Grundgerüst, Loader, Teileliste, Messen, WebXR, PWA, Pages-Workflow, Konverter; XR nur im Emulator geprüft, Pages noch nicht aktiviert)
+**Stand:** Alle zehn V1-Aufgaben bearbeitet, Desktop-Abnahme liegt bei Chris. XR nur im Emulator geprüft, Pages noch nicht aktiviert, Quest fehlt
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -21,7 +21,7 @@
 | Konverter | STL/OBJ einlesen, Dreiecke reduzieren, GLB schreiben | ✅ erledigt (`converter/convert.py`, Anleitung in `converter/README.md`) |
 | Konverter | Instanzen für gleiche Teile, Option „unvereinfacht“ | ✅ erledigt (auch um 90° gedrehte Kopien) |
 | Test | Prüfkörper in `samples/` erstellen | ✅ erledigt (`samples/generate.py`) |
-| Test | Abnahme Desktop (V1-01 bis V1-10, K1-01 bis K1-06) | ⏳ offen |
+| Test | Abnahme Desktop (V1-01 bis V1-10, K1-01 bis K1-06) | 🔄 Agent-Tests durchgespielt und in `ABNAHME.md` notiert, **Übergabe an Chris**; V1-10 und K1-01 brauchen aktivierte Pages bzw. den Mac |
 | Test | Abnahme Quest (V1-11 bis V1-19) | ⏳ offen – Gerät fehlt |
 
 Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
@@ -78,3 +78,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Aufgabe 7: PWA (`viewer/manifest.webmanifest`, `sw.js`, `js/pwa.js`, `icons/`, `tools/make-icons.mjs`, `tools/build-pages.mjs`). Icon: Würfel mit Messstrecke (192, 512, maskable, Apple-Touch). Test `pwa.test.mjs`: Manifest und Icon-Maße, Precache vollständig (35 Dateien, jedes importierte Modul enthalten), Offline-Start mit abgeschaltetem Netz inklusive Modell laden und Messen, Update auf neue Build-ID löscht den alten Cache, Entwicklungsmodus cached nichts, „App installieren“-Button. Zwei Testfehler (async `waitForFunction`) selbst gefunden und behoben |
 | 2026-10-23 | Aufgabe 8: Pages-Workflow `.github/workflows/pages.yml` (Node 22, `tools/build-pages.mjs`, `configure-pages`/`upload-pages-artifact`/`deploy-pages`). Der PWA-Test serviert den Build jetzt unter `/quest-cad-viewer/` wie GitHub Pages: SW-Scope, Offline und Messen funktionieren im Unterpfad. Aktivierung von Pages und erster Lauf stehen noch aus (Repo-Einstellung, nicht per Code möglich) |
 | 2026-10-23 | Aufgabe 9: Konverter (`converter/convert.py`, `readers.py`, `geometry.py`, `glb_writer.py`, `README.md`, `requirements.txt`). Prüfkörper `samples/baugruppe.obj` (25 Teile, 24 gleiche Schrauben, 6 gedreht) ergänzt. Tests: 23 Python-Unit-Tests und `tests/converter.test.mjs` (Konverter erzeugt GLB, Viewer lädt sie): Quader 100,0 × 50,0 × 20,0 mm bleibt exakt, Messen am konvertierten Quader 100,0 mm, `last_2mio.stl` → 200.000 Dreiecke in 5,5 s (100,1 MB → 3,6 MB, Bounding-Box ±0,003 mm), „unvereinfacht“ behält 6.156 Dreiecke, Instanzen 201,9 kB → 9,3 kB (Faktor 13,7 gegenüber ohne Instanzen), um 90° gedrehte Schrauben landen an der richtigen Stelle. Spitzen-RAM 950 MB bei 2 Mio. Dreiecken |
+| 2026-10-23 | Aufgabe 10: Desktop-Abnahme vorbereitet. `ABNAHME.md` hat eine Spalte „Bemerkung“ mit den Agent-Testergebnissen aller Schritte und eine Vorbereitungsanleitung. Alle Status stehen weiter auf ⏳, das ✅ setzt Chris. Erster Pages-Lauf auf GitHub: Build-Schritt fehlerfrei, `configure-pages` bricht ab, weil Pages im Repo noch nicht aktiviert ist (Einstellung durch Chris nötig). K1-01 nach Anleitung in frischer venv geprüft (Linux) |

@@ -4,7 +4,7 @@ WebXR-Viewer, mit dem sich Fusion-Modelle auf der **Meta Quest 3** im Maßstab *
 
 Die App läuft als installierbare Web-App (PWA) direkt im Quest-Browser: kein Sideloading, kein Entwicklermodus. Ohne Brille funktioniert sie auch am Mac, PC oder iPad im Browser (Maussteuerung, ohne VR).
 
-> **Status:** V1 in Umsetzung, Viewer und Desktop-Betrieb stehen, XR bisher nur im Emulator geprüft, Konverter folgt. Details: [FORTSCHRITT.md](FORTSCHRITT.md)
+> **Status:** V1 ist umgesetzt und wartet auf die Desktop-Abnahme durch Chris. XR bisher nur im Emulator geprüft (die Quest ist noch nicht gekauft). Details: [FORTSCHRITT.md](FORTSCHRITT.md)
 
 ---
 
@@ -57,21 +57,30 @@ Gemessen wird am **Dreiecksnetz**, nicht am CAD-Volumenmodell:
 - Die Vereinfachung im Konverter verändert die Geometrie zusätzlich. Für Teile, an denen gemessen werden soll, gibt es die Option „unvereinfacht“.
 - Referenz für exakte Maße bleibt **Fusion**. Der Viewer dient zum Prüfen von Größen, Abständen und Bauräumen.
 
-## Benutzung (geplant für V1)
+## Benutzung
 
 1. **Fusion:** Datei → Exportieren → STL oder OBJ, **Einheit: Millimeter**.
 2. **Konverter (optional, für große Baugruppen):**
    ```bash
    python3 converter/convert.py roboterarm.stl -o roboterarm.glb
    ```
+   Installation und alle Optionen: [`converter/README.md`](converter/README.md).
 3. **Datei auf die Quest bringen:** per USB, Cloud-Download oder Download im Quest-Browser.
 4. **Viewer öffnen:** `https://chris01-byte.github.io/quest-cad-viewer/` im Quest-Browser → Datei wählen → „AR starten“.
 
 ## Technik
 
 - **Viewer:** [three.js](https://threejs.org/) (WebXR, Loader für STL/OBJ/glTF), PWA (Manifest + Service Worker), gehostet über **GitHub Pages** (HTTPS ist für WebXR Pflicht).
-- **Konverter:** Python 3, Mesh-Bibliotheken (z. B. trimesh, Vereinfachung per Quadric-Decimation) – endgültige Auswahl bei der Umsetzung.
-- **Test ohne Brille:** Desktop-Modus im Browser; zusätzlich Metas *Immersive Web Emulator* (Chrome-Erweiterung) zur Simulation der Quest.
+- **Konverter:** Python 3 mit `numpy` und `fast-simplification` (Quadric Edge Collapse), Parser und GLB-Schreiber sind eigener Code.
+- **Test ohne Brille:** Desktop-Modus im Browser; die XR-Tests laufen mit Metas Emulations-Runtime *IWER* (npm), zum Ausprobieren von Hand eignet sich Metas *Immersive Web Emulator* (Chrome-Erweiterung).
+
+## Lokal ausprobieren
+
+```bash
+cd viewer && python3 -m http.server 8000     # http://localhost:8000
+```
+
+Prüfkörper zum Laden liegen in [`samples/`](samples/), Tests in [`tests/`](tests/).
 
 ## Dokumente
 
