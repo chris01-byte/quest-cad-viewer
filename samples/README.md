@@ -8,6 +8,7 @@ Achtung: Dieses Repo ist öffentlich. Hier nur Testmodelle ablegen.
 |---|---|---|---|
 | `pruefquader.stl` / `.obj` | Quader 100 × 50 × 20 mm, Ecke im Ursprung | mm | ja |
 | `pruefwinkel.glb` | L-Winkel 80 × 60 × 40 mm aus zwei Bauteilen (`Grundplatte`, `Schenkel_mit_Bohrung`), Bohrung Ø 10 mm (64 Segmente, Bohrungsachse in Z) | m (glTF) | ja |
+| `baugruppe.obj` | Platte 200 × 10 × 100 mm + 24 identische Schrauben (6 davon um 90° gedreht), 25 Teile, 6 156 Dreiecke, für die Konverter-Schritte K1-04 bis K1-06 | mm | ja |
 | `last_2mio.stl` | Kugel Ø 200 mm, 2 002 224 Dreiecke, ≈ 100 MB | mm | **nein**, per Skript |
 
 ## Neu erzeugen

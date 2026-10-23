@@ -18,3 +18,5 @@ converter/out/
 samples/last_2mio.stl
 # Deploy-Ausgabe (tools/build-pages.mjs)
 _site/
+# Konverter-venv
+converter/.venv/

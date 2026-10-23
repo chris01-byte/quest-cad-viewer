@@ -23,3 +23,4 @@ Die Skripte starten selbst einen kleinen lokalen Server für `viewer/` und einen
 | `xr.test.mjs` | XR-Bedienlogik mit simulierten Controllern: Greifen, Skalieren, 1:1, Ablegen, Panel-Hover und -Buttons, Strahl-Messen, Panel greifen |
 | `xr-session.test.mjs` | Echte WebXR-Session im IWER-Emulator (Quest 3): AR/VR starten, Passthrough, Trigger/Grip-Events, Panel, Messen, Greifen, Beenden, erneuter Start (V1-11, V1-13, V1-14, V1-16 nur emuliert) |
 | `pwa.test.mjs` | PWA: Manifest, Icons, Build-Skript, Service-Worker-Precache, Offline-Start, Update auf neue Version, Installieren-Button (V1-10) |
+| `converter.test.mjs` | Konverter erzeugt GLB, Viewer lädt sie: Maße, Messen, Teile, „unvereinfacht“, Instanzen, Lasttest (K1-02 bis K1-06). Braucht Python mit `numpy` und `fast-simplification` (`CONVERTER_PYTHON`), sonst übersprungen |

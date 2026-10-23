@@ -13,6 +13,7 @@ Im Ordner [`samples/`](samples/) liegen Testmodelle mit bekannten Maßen (werden
 | `pruefquader.stl` | Quader | 100 × 50 × 20 mm |
 | `pruefquader.obj` | derselbe Quader als OBJ | 100 × 50 × 20 mm |
 | `pruefwinkel.glb` | L-Winkel mit Bohrung, zwei Bauteile | 80 × 60 × 40 mm, Bohrung Ø 10 mm |
+| `baugruppe.obj` | Platte 200 × 10 × 100 mm + 24 identische Schrauben (6 gedreht), 25 Teile; für K1-04 und K1-06, solange kein Fusion-Export vorliegt | 204 × 34 × 120 mm |
 | `last_2mio.stl` | Lasttest, fein tesselierte Kugel | Ø 200 mm, ≈ 2 Mio. Dreiecke |
 
 Zusätzlich: ein eigener Export aus Fusion (z. B. ein Glied des 6-Achs-Roboterarms).

@@ -106,6 +106,36 @@ def plate_with_hole_mesh(width, height, thickness, hole_d, segments, origin=(0.0
     return verts, np.array(tris, dtype=np.int64)
 
 
+def cylinder_mesh(radius, height, segments, base=(0.0, 0.0, 0.0)):
+    """Closed cylinder along +Y, `base` is the centre of the bottom cap."""
+    a = 2 * math.pi * np.arange(segments) / segments
+    ring = np.stack([radius * np.cos(a), np.zeros(segments), radius * np.sin(a)], axis=1)
+    verts = np.vstack([ring, ring + (0, height, 0), [0, 0, 0], [0, height, 0]]) + base
+    bottom, top = 2 * segments, 2 * segments + 1
+    tris = []
+    for i in range(segments):
+        j = (i + 1) % segments
+        tris += [(i, j, segments + j), (i, segments + j, segments + i),  # side, outward
+                 (bottom, j, i),                                            # bottom cap, faces -Y
+                 (top, segments + i, segments + j)]                         # top cap, faces +Y
+    # the ring runs clockwise seen from +Y, so reverse every triangle to point the normals outward
+    return verts, np.array(tris, dtype=np.int64)[:, ::-1].copy()
+
+
+def merge_meshes(*meshes):
+    verts, tris, offset = [], [], 0
+    for v, t in meshes:
+        verts.append(v)
+        tris.append(t + offset)
+        offset += len(v)
+    return np.vstack(verts), np.vstack(tris)
+
+
+def screw_mesh(segments=32):
+    """A bolt: shaft Ø6 x 20 mm and head Ø10 x 4 mm, axis along +Y, foot at the origin."""
+    return merge_meshes(cylinder_mesh(3, 20, segments), cylinder_mesh(5, 4, segments, base=(0, 20, 0)))
+
+
 def sphere_mesh(radius, rings, segments, center=(0.0, 0.0, 0.0)):
     """UV sphere with shared vertices. Triangle count = 2 * segments * (rings - 1)."""
     phi = math.pi * np.arange(1, rings) / rings
@@ -215,6 +245,18 @@ def write_glb(path, parts, scale=1.0):
         f.write(struct.pack("<II", len(binary), 0x004E4942) + bytes(binary))
 
 
+def write_obj_objects(path, objects):
+    """OBJ with one `o` statement per part; `objects` = [(name, verts, tris)]."""
+    lines = ["# quest-cad-viewer sample, unit: mm"]
+    offset = 0
+    for name, verts, tris in objects:
+        lines.append(f"o {name}")
+        lines += [f"v {x:.6f} {y:.6f} {z:.6f}" for x, y, z in verts]
+        lines += [f"f {a + 1 + offset} {b + 1 + offset} {c + 1 + offset}" for a, b, c in tris]
+        offset += len(verts)
+    Path(path).write_text("\n".join(lines) + "\n")
+
+
 # ----------------------------------------------------------------------- main
 
 def main():
@@ -240,6 +282,24 @@ def main():
               [("Grundplatte", base_v, base_t), ("Schenkel_mit_Bohrung", leg_v, leg_t)], scale=0.001)
     print(f"pruefwinkel.glb         80 x 60 x 40 mm, Bohrung Ø 10 mm ({segments} Segmente), "
           f"{len(base_t) + len(leg_t)} Dreiecke, Einheit m")
+
+    # baugruppe: plate 200 x 10 x 100 mm with 24 identical bolts, 6 of them lying (turned by 90 degrees)
+    objects = []
+    plate_v, plate_t = box_mesh((200, 10, 100))
+    check_mesh("Grundplatte", plate_v, plate_t, expect_volume=200 * 10 * 100)
+    objects.append(("Grundplatte", plate_v, plate_t))
+    bolt_v, bolt_t = screw_mesh()
+    check_mesh("Schraube", bolt_v, bolt_t)
+    standing = [(20 + 32 * i, 10, 20 + 20 * j) for j in range(3) for i in range(6)]
+    lying = [(20 + 32 * i, 5, -15) for i in range(6)]
+    for n, pos in enumerate(standing + lying, 1):
+        v = bolt_v.copy()
+        if n > len(standing):
+            v = np.stack([v[:, 1], -v[:, 0], v[:, 2]], axis=1)  # rotation by 90 degrees about Z, exact
+        objects.append((f"Schraube_{n:02d}", v + pos, bolt_t))
+    write_obj_objects(OUT_DIR / "baugruppe.obj", objects)
+    print(f"baugruppe.obj           Platte 200 x 10 x 100 mm + {len(standing) + len(lying)} gleiche Schrauben "
+          f"({len(lying)} gedreht), {sum(len(t) for _, _, t in objects)} Dreiecke")
 
     if not args.ohne_last:
         # last_2mio: sphere Ø200 mm, rings * segments chosen for ≈ 2.0 Mio. triangles
