@@ -1,0 +1,17 @@
+{
+  "name": "Quest CAD Viewer",
+  "short_name": "CAD Viewer",
+  "description": "Fusion-Modelle im Maßstab 1:1 ansehen und vermessen, am Desktop und auf der Meta Quest 3.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#14181e",
+  "theme_color": "#14181e",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

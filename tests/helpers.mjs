@@ -34,9 +34,9 @@ export function startServer(dir = VIEWER_DIR) {
   }));
 }
 
-/** Opens the viewer; collects console errors and page errors in `errors`. With `emulateQuest` a Meta Quest 3 is emulated by IWER (window.__iwer = the XRDevice). */
-export async function openViewer({ viewport = { width: 1280, height: 800 }, emulateQuest = false } = {}) {
-  const srv = await startServer();
+/** Opens the viewer (or another build of it via `dir`); collects console errors and page errors in `errors`. With `emulateQuest` a Meta Quest 3 is emulated by IWER (window.__iwer = the XRDevice). */
+export async function openViewer({ viewport = { width: 1280, height: 800 }, emulateQuest = false, dir = VIEWER_DIR } = {}) {
+  const srv = await startServer(dir);
   const browser = await chromium.launch({
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'],
   });

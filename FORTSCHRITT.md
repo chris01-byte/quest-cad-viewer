@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 6 umgesetzt (Prüfkörper, Grundgerüst, Loader, Teileliste, Messen, WebXR; XR nur im Emulator geprüft)
+**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 7 umgesetzt (Prüfkörper, Grundgerüst, Loader, Teileliste, Messen, WebXR, PWA; XR nur im Emulator geprüft)
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -16,7 +16,7 @@
 | Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | ✅ erledigt (Maße und Dreiecke passen sich an, Filter ab 12 Teilen) |
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ✅ erledigt (Desktop; Strahl-API für XR vorbereitet) |
 | Viewer | WebXR: Passthrough, Greifen, Drehen, Skalieren, 1:1 | ✅ umgesetzt, **nur im Emulator (IWER) und mit simulierten Controllern geprüft**, Quest-Abnahme V1-11 bis V1-19, V1-24 bis V1-26 offen |
-| Viewer | PWA (Manifest, Service Worker, Icon) | ⏳ offen |
+| Viewer | PWA (Manifest, Service Worker, Icon) | ✅ erledigt (Offline-Start und Update im Headless-Test geprüft; Installation im Quest-Browser offen) |
 | Viewer | GitHub Pages einrichten | ⏳ offen |
 | Konverter | STL/OBJ einlesen, Dreiecke reduzieren, GLB schreiben | ⏳ offen |
 | Konverter | Instanzen für gleiche Teile, Option „unvereinfacht“ | ⏳ offen |
@@ -55,6 +55,7 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Eigenes BVH (`viewer/js/bvh.js`, ca. 150 Zeilen) für das Picken statt `three-mesh-bvh` | three.js' Raycaster braucht bei 2 Mio. Dreiecken über 100 ms pro Strahl; keine zusätzliche Abhängigkeit. Gemessen: 6 µs pro Strahl, Aufbau 3 s für 2 Mio. Dreiecke |
 | 2026-10-23 | XR-Bedienung: **Grip** = greifen (eine Hand bewegt und dreht, zwei Hände skalieren und drehen, Einrasten auf exakt 1:1 bei ±2 %, Bereich 1 % bis 10 000 %), **Trigger** = Panel-Taste drücken, Messpunkt setzen oder Modell ablegen. Grip auf das Panel zielend greift das Panel. In AR/VR steht das Modell beim Start 1:1, 0,7 m vor dem Gesicht, auf Tischhöhe (0,75 m) bzw. auf dem Boden, wenn es höher als 0,7 m ist | Entspricht ABNAHME V1-11 bis V1-16; Werte (Tischhöhe, Abstand) sind Startannahmen und auf der Quest zu bestätigen |
 | 2026-10-23 | `iwer` (Meta, MIT) als reine **Test-Abhängigkeit** in `tests/package.json`, nicht im Viewer | Emuliert die WebXR-API und erlaubt, die echte Session-Strecke ohne Brille zu testen; wird nicht ausgeliefert |
+| 2026-10-23 | Offline-Fähigkeit über einen Service Worker mit **versioniertem Precache**. `tools/build-pages.mjs` stempelt beim Deploy eine Build-ID in `sw.js` und schreibt `asset-manifest.json` mit allen Dateien. Lokal (`python3 -m http.server`) ist `sw.js` ungestempelt und cached nichts | Keine von Hand gepflegte Dateiliste (vergessene Datei = App startet offline nicht), keine Mischung zweier Versionen, Updates automatisch. Der Viewer-Code selbst bleibt ohne Bundler; nur der Deploy-Schritt kopiert und stempelt. Neuer Ordner `tools/` |
 | 2026-10-23 | `last_2mio.stl` (≈ 100 MB) liegt nicht im Repo, sondern wird per `samples/generate.py` erzeugt | öffentliches Repo, GitHub-Dateigrenze, Datei ist in Sekunden reproduzierbar |
 
 ## Änderungsprotokoll
@@ -69,3 +70,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Aufgabe 4: Teileliste mit Checkbox je Teil, „Alle ein/aus“ (wirkt nur auf gefilterte Zeilen), Filterfeld ab 12 Teilen; Maße und Dreiecksanzahl folgen den sichtbaren Teilen. Test `tests/parts.test.mjs`: Schenkel aus → 80,0 × 10,0 × 40,0 mm, Renderer zeichnet 12 statt 540 Dreiecke |
 | 2026-10-23 | Aufgabe 5: Messen (`viewer/js/measure.js`, `bvh.js`): Punkt–Punkt mit Eckpunkt-Fang, Gummiband mit Live-Abstand, mehrere Messungen, einzeln und alle löschen, M-Taste, Esc bricht ab. Punkte liegen im Modellraum, die Anzeige bleibt auch bei skaliertem Modell die echte Länge. Tests `measure.test.mjs`, `measure-large.test.mjs`, `bvh.test.mjs`: Quader-Kanten 100,0 / 50,0 / 20,0 mm, Bohrung 10,000 mm, Kugel-Sehne 141,42 mm auf 2 Mio. Dreiecken. Abnahmeschritte V1-20 bis V1-22 ergänzt |
 | 2026-10-23 | Aufgabe 6: WebXR (`viewer/js/xr/`): Session-Start AR (Fallback VR), Passthrough, Greifen/Drehen/Skalieren, 1:1, Ablegen, Strahl-Messen, Panel mit allen Funktionen. Tests: `xr.test.mjs` (Logik mit simulierten Controllern) und `xr-session.test.mjs` (echte Session-Strecke im IWER-Emulator, Meta Quest 3). Der Emulator fand zwei Fehler, die die Simulation nicht zeigte: Panel/Modell wurden vor der ersten Kopfpose platziert (Panel unter dem Boden) und die UI-Ebenen hingen von der DOM-Reihenfolge ab. Abnahmeschritte V1-23 bis V1-26 ergänzt. **Nicht geprüft:** echtes Tracking, Passthrough-Qualität, Hit-Test, Leistung auf der Quest |
+| 2026-10-23 | Aufgabe 7: PWA (`viewer/manifest.webmanifest`, `sw.js`, `js/pwa.js`, `icons/`, `tools/make-icons.mjs`, `tools/build-pages.mjs`). Icon: Würfel mit Messstrecke (192, 512, maskable, Apple-Touch). Test `pwa.test.mjs`: Manifest und Icon-Maße, Precache vollständig (35 Dateien, jedes importierte Modul enthalten), Offline-Start mit abgeschaltetem Netz inklusive Modell laden und Messen, Update auf neue Build-ID löscht den alten Cache, Entwicklungsmodus cached nichts, „App installieren“-Button. Zwei Testfehler (async `waitForFunction`) selbst gefunden und behoben |

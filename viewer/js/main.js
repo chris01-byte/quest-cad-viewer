@@ -4,6 +4,7 @@ import { loadFiles, LoadError } from './loaders.js';
 import { MeasureTool } from './measure.js';
 import { XRSessionManager } from './xr/session.js';
 import { fmtMm } from './format.js';
+import { setUpPWA } from './pwa.js';
 
 const viewer = new Viewer(document.getElementById('view'));
 
@@ -116,6 +117,7 @@ window.addEventListener('keydown', (e) => {
 
 ui.setGrid(viewer.gridCell);
 xr.detect().then((support) => ui.setXRSupport(support));
+setUpPWA({ onInstallAvailable: (install) => ui.setInstall(install) });
 
 // Test hook for headless tests (tests/), not used by the app itself.
 window.cadViewer = { viewer, ui, measure, xr, get model() { return viewer.model; } };

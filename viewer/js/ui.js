@@ -109,6 +109,13 @@ export class UI {
     warn.textContent = `Achtung: ${fmtInt(visibleTris)} Dreiecke liegen über dem Zielwert von ${fmtInt(TRIANGLE_TARGET)}. Auf der Quest kann das ruckeln – mit dem Konverter verkleinern.`;
   }
 
+  /** Show the install button when the browser offers installation (null hides it). */
+  setInstall(install) {
+    const button = $('btn-install');
+    button.hidden = !install;
+    button.onclick = install;
+  }
+
   /** Show the AR/VR buttons the browser supports and explain when none is available. */
   setXRSupport({ ar, vr }) {
     $('btn-ar').hidden = !ar;
