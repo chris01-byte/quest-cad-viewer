@@ -1,0 +1,9 @@
+{
+  "name": "quest-cad-viewer-tests",
+  "private": true,
+  "type": "module",
+  "description": "Headless-Tests für den Viewer, nur für die Entwicklung (wird nicht deployt)",
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

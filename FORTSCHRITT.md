@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgabe 1 (Prüfkörper) erledigt
+**Stand:** Umsetzung V1 läuft – Aufgaben 1 (Prüfkörper) und 2 (Viewer-Grundgerüst) erledigt
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -11,7 +11,7 @@
 | Planung | Anforderungen, Architektur, Stufenplan | ✅ erledigt |
 | Planung | Abnahmeschritte V1 | ✅ erledigt |
 | Repo | Struktur, Dokumentation | ✅ erledigt |
-| Viewer | Grundgerüst three.js, Desktop-Ansicht | ⏳ offen |
+| Viewer | Grundgerüst three.js, Desktop-Ansicht | ✅ erledigt (Szene, Licht, Raster, OrbitControls, Datei öffnen per Dialog und Drag & Drop) |
 | Viewer | Loader STL / OBJ / GLB, Einheiten mm | ⏳ offen |
 | Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | ⏳ offen |
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ⏳ offen |
@@ -42,6 +42,8 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Hosting über GitHub Pages, Repo öffentlich | keine vertraulichen Modelle; HTTPS automatisch |
 | 2026-10-23 | Modelle in V1 per Datei-Auswahl, Mac-Sync erst V2 | HTTPS-Verbindung Quest ↔ Mac braucht lokales Zertifikat |
 | 2026-10-23 | Entwicklung mit Claude Code lokal auf dem Mac | Konverter und Tests mit echten Fusion-Exporten, lokaler Server, später V2 |
+| 2026-10-23 | three.js 0.186.1 unverändert in `viewer/vendor/three/` (inkl. OrbitControls, STL-/OBJ-/GLTF-Loader). Der `XRControllerModelFactory` fehlt bewusst: Er lädt Controller-Modelle von einem CDN und würde offline nicht funktionieren, die Controller werden in V1 mit eigenen Strahlen dargestellt | PWA muss offline laufen |
+| 2026-10-23 | Datei-Auswahl ohne `accept`-Filter, Prüfung der Endung im Code | Der Android-Dateidialog (Quest-Browser) kann unbekannte Endungen wie `.stl`/`.glb` ausgrauen; so bleibt jede Datei wählbar und die Fehlermeldung kommt von der App |
 | 2026-10-23 | `last_2mio.stl` (≈ 100 MB) liegt nicht im Repo, sondern wird per `samples/generate.py` erzeugt | öffentliches Repo, GitHub-Dateigrenze, Datei ist in Sekunden reproduzierbar |
 
 ## Änderungsprotokoll
@@ -51,3 +53,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Repo angelegt: README, Abnahmeschritte, Fortschritt, Ordnerstruktur |
 | 2026-10-23 | CLAUDE.md mit Projektkontext und Arbeitsregeln für Claude Code ergänzt; Weiterarbeit lokal auf dem Mac |
 | 2026-10-23 | Aufgabe 1: Prüfkörper-Generator `samples/generate.py` (numpy), `pruefquader.stl/.obj` und `pruefwinkel.glb` erzeugt und unabhängig nachgemessen (100 × 50 × 20 mm, 80 × 60 × 40 mm, Bohrung r = 5,000 mm); `last_2mio.stl` per Skript (2 002 224 Dreiecke) |
+| 2026-10-23 | Aufgabe 2: Viewer-Grundgerüst (`viewer/index.html`, `js/viewer.js`, `js/ui.js`), Rendern nur bei Änderung, adaptives Raster; Headless-Test `tests/viewer-shell.test.mjs` (Playwright). Ein Rasterfehler (12 statt 400 Linien) fiel erst im Screenshot auf, daraufhin Pixelprüfung im Test ergänzt |

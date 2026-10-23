@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14181e">
+  <title>Quest CAD Viewer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <canvas id="view" aria-label="3D-Ansicht"></canvas>
+
+  <header class="topbar">
+    <h1>Quest CAD Viewer</h1>
+    <div class="actions">
+      <button id="btn-open" type="button" class="primary">Datei öffnen …</button>
+      <input id="file-input" type="file" multiple hidden>
+    </div>
+  </header>
+
+  <aside id="panel" class="panel" aria-label="Modell und Werkzeuge">
+    <section id="sec-model">
+      <h2>Modell</h2>
+      <dl class="facts">
+        <dt>Datei</dt><dd id="info-name">–</dd>
+        <dt>Größe</dt><dd id="info-size">–</dd>
+        <dt>Raster</dt><dd id="info-grid">100 mm</dd>
+      </dl>
+    </section>
+  </aside>
+
+  <div id="hint" class="hint">
+    <p class="hint-title">Datei öffnen</p>
+    <p>STL, OBJ oder GLB wählen oder hierher ziehen.<br>STL und OBJ werden als Millimeter gelesen, GLB als Meter.</p>
+    <button id="btn-open-hint" type="button" class="primary">Datei öffnen …</button>
+  </div>
+
+  <div id="toast" class="toast" role="alert" hidden></div>
+  <div id="drop-overlay" class="drop-overlay" hidden>Datei hier ablegen</div>
+</body>
+</html>
