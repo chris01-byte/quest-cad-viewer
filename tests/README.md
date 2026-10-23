@@ -5,7 +5,8 @@ Headless-Tests mit [Playwright](https://playwright.dev/) gegen den Viewer (`view
 ```bash
 cd tests
 npm install            # einmalig: installiert playwright, danach: npx playwright install chromium
-node viewer-shell.test.mjs
+npm test               # alle *.test.mjs nacheinander
+node loaders.test.mjs  # oder ein einzelnes Skript
 ```
 
 Die Skripte starten selbst einen kleinen lokalen Server für `viewer/` und einen Headless-Chromium mit Software-WebGL (SwiftShader). Die XR-Funktionen lassen sich hier nicht prüfen: Headless-Chromium hat kein WebXR, dafür bleibt der Immersive Web Emulator bzw. die Quest.

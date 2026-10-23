@@ -25,6 +25,7 @@ check('Raster ist sichtbar (> 2000 Pixel)', drawn > 2000, `pixel=${drawn}`);
 const txt = path.join(os.tmpdir(), 'kein-modell.txt');
 fs.writeFileSync(txt, 'das ist kein Modell');
 await page.setInputFiles('#file-input', txt);
+await page.waitForFunction(() => !document.getElementById('toast').classList.contains('info')); // loading is async
 const toast = await page.locator('#toast').innerText();
 check('V1-09 .txt: verständliche Fehlermeldung', /nicht unterstützt/.test(toast) && /STL, OBJ oder GLB/.test(toast), toast);
 check('App bleibt bedienbar (Button aktiv)', await page.locator('#btn-open').isEnabled());
