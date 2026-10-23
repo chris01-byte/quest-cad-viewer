@@ -40,9 +40,11 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Messen gehört in V1 | Kernanforderung |
 | 2026-10-23 | Hosting über GitHub Pages, Repo öffentlich | keine vertraulichen Modelle; HTTPS automatisch |
 | 2026-10-23 | Modelle in V1 per Datei-Auswahl, Mac-Sync erst V2 | HTTPS-Verbindung Quest ↔ Mac braucht lokales Zertifikat |
+| 2026-10-23 | Entwicklung mit Claude Code lokal auf dem Mac | Konverter und Tests mit echten Fusion-Exporten, lokaler Server, später V2 |
 
 ## Änderungsprotokoll
 
 | Datum | Änderung |
 |---|---|
 | 2026-10-23 | Repo angelegt: README, Abnahmeschritte, Fortschritt, Ordnerstruktur |
+| 2026-10-23 | CLAUDE.md mit Projektkontext und Arbeitsregeln für Claude Code ergänzt; Weiterarbeit lokal auf dem Mac |
