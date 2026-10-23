@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Alle zehn V1-Aufgaben bearbeitet, Desktop-Abnahme liegt bei Chris. XR nur im Emulator geprüft, Pages noch nicht aktiviert, Quest fehlt
+**Stand:** Alle zehn V1-Aufgaben bearbeitet, Desktop-Abnahme liegt bei Chris. XR nur im Emulator geprüft, Quest fehlt. Viewer ist veröffentlicht
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -17,7 +17,7 @@
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ✅ erledigt (Desktop; Strahl-API für XR vorbereitet) |
 | Viewer | WebXR: Passthrough, Greifen, Drehen, Skalieren, 1:1 | ✅ umgesetzt, **nur im Emulator (IWER) und mit simulierten Controllern geprüft**, Quest-Abnahme V1-11 bis V1-19, V1-24 bis V1-26 offen |
 | Viewer | PWA (Manifest, Service Worker, Icon) | ✅ erledigt (Offline-Start und Update im Headless-Test geprüft; Installation im Quest-Browser offen) |
-| Viewer | GitHub Pages einrichten | 🔄 Workflow fertig (`.github/workflows/pages.yml`); **Chris muss einmalig in den Repo-Einstellungen Pages auf „GitHub Actions“ stellen** |
+| Viewer | GitHub Pages einrichten | ✅ erledigt, live unter https://chris01-byte.github.io/quest-cad-viewer/ |
 | Konverter | STL/OBJ einlesen, Dreiecke reduzieren, GLB schreiben | ✅ erledigt (`converter/convert.py`, Anleitung in `converter/README.md`) |
 | Konverter | Instanzen für gleiche Teile, Option „unvereinfacht“ | ✅ erledigt (auch um 90° gedrehte Kopien) |
 | Test | Prüfkörper in `samples/` erstellen | ✅ erledigt (`samples/generate.py`) |
@@ -28,7 +28,6 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 
 ## Offene Punkte
 
-- **GitHub Pages aktivieren (Chris):** Repository → Settings → Pages → „Build and deployment“ → Source **GitHub Actions**. Danach den Workflow „Viewer veröffentlichen“ unter Actions einmal per „Run workflow“ starten (oder die nächste Änderung an `viewer/` pushen). Adresse: https://chris01-byte.github.io/quest-cad-viewer/
 - Vorschlag (nicht umgesetzt): ein zweiter Workflow führt die Headless-Tests (`tests/`) bei jedem Push aus, damit kein defekter Stand veröffentlicht wird.
 - **XR: Dateien laden im Headset** geht im Browser nicht (kein Datei-Dialog in einer immersiven Session). Heute: Dateien vor dem Start öffnen, das Panel weist darauf hin. Vorschlag: zuletzt geöffnete Modelle im Browser (IndexedDB) merken und im Panel zur Auswahl anbieten. Bitte mit Chris klären.
 - **XR: Ablegen auf dem Tisch** nutzt den Hit-Test der Quest (Raumerkennung), sofern der Browser ihn freigibt; sonst die Controller-Höhe. Der Hit-Test ließ sich im Emulator nicht prüfen und ist auf der Quest zu bestätigen.
@@ -79,3 +78,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Aufgabe 8: Pages-Workflow `.github/workflows/pages.yml` (Node 22, `tools/build-pages.mjs`, `configure-pages`/`upload-pages-artifact`/`deploy-pages`). Der PWA-Test serviert den Build jetzt unter `/quest-cad-viewer/` wie GitHub Pages: SW-Scope, Offline und Messen funktionieren im Unterpfad. Aktivierung von Pages und erster Lauf stehen noch aus (Repo-Einstellung, nicht per Code möglich) |
 | 2026-10-23 | Aufgabe 9: Konverter (`converter/convert.py`, `readers.py`, `geometry.py`, `glb_writer.py`, `README.md`, `requirements.txt`). Prüfkörper `samples/baugruppe.obj` (25 Teile, 24 gleiche Schrauben, 6 gedreht) ergänzt. Tests: 23 Python-Unit-Tests und `tests/converter.test.mjs` (Konverter erzeugt GLB, Viewer lädt sie): Quader 100,0 × 50,0 × 20,0 mm bleibt exakt, Messen am konvertierten Quader 100,0 mm, `last_2mio.stl` → 200.000 Dreiecke in 5,5 s (100,1 MB → 3,6 MB, Bounding-Box ±0,003 mm), „unvereinfacht“ behält 6.156 Dreiecke, Instanzen 201,9 kB → 9,3 kB (Faktor 13,7 gegenüber ohne Instanzen), um 90° gedrehte Schrauben landen an der richtigen Stelle. Spitzen-RAM 950 MB bei 2 Mio. Dreiecken |
 | 2026-10-23 | Aufgabe 10: Desktop-Abnahme vorbereitet. `ABNAHME.md` hat eine Spalte „Bemerkung“ mit den Agent-Testergebnissen aller Schritte und eine Vorbereitungsanleitung. Alle Status stehen weiter auf ⏳, das ✅ setzt Chris. Erster Pages-Lauf auf GitHub: Build-Schritt fehlerfrei, `configure-pages` bricht ab, weil Pages im Repo noch nicht aktiviert ist (Einstellung durch Chris nötig). K1-01 nach Anleitung in frischer venv geprüft (Linux) |
+| 2026-10-23 | GitHub Pages aktiviert (Quelle „GitHub Actions“), Workflow-Lauf erfolgreich; Chris hat die Seite auf dem iPhone geöffnet, sie lädt. Damit ist Aufgabe 8 abgeschlossen; V1-10 (Installation, offline) steht noch aus |
