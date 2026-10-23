@@ -4,7 +4,7 @@ WebXR-Viewer, mit dem sich Fusion-Modelle auf der **Meta Quest 3** im Maßstab *
 
 Die App läuft als installierbare Web-App (PWA) direkt im Quest-Browser: kein Sideloading, kein Entwicklermodus. Ohne Brille funktioniert sie auch am Mac, PC oder iPad im Browser (Maussteuerung, ohne VR).
 
-> **Status:** Planung abgeschlossen, Umsetzung V1 noch nicht begonnen. Details: [FORTSCHRITT.md](FORTSCHRITT.md)
+> **Status:** V1 in Umsetzung, Viewer und Desktop-Betrieb stehen, XR bisher nur im Emulator geprüft, Konverter folgt. Details: [FORTSCHRITT.md](FORTSCHRITT.md)
 
 ---
 

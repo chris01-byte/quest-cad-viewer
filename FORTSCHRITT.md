@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 7 umgesetzt (Prüfkörper, Grundgerüst, Loader, Teileliste, Messen, WebXR, PWA; XR nur im Emulator geprüft)
+**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 8 umgesetzt (Prüfkörper, Grundgerüst, Loader, Teileliste, Messen, WebXR, PWA, Pages-Workflow; XR nur im Emulator geprüft, Pages noch nicht aktiviert)
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -17,7 +17,7 @@
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ✅ erledigt (Desktop; Strahl-API für XR vorbereitet) |
 | Viewer | WebXR: Passthrough, Greifen, Drehen, Skalieren, 1:1 | ✅ umgesetzt, **nur im Emulator (IWER) und mit simulierten Controllern geprüft**, Quest-Abnahme V1-11 bis V1-19, V1-24 bis V1-26 offen |
 | Viewer | PWA (Manifest, Service Worker, Icon) | ✅ erledigt (Offline-Start und Update im Headless-Test geprüft; Installation im Quest-Browser offen) |
-| Viewer | GitHub Pages einrichten | ⏳ offen |
+| Viewer | GitHub Pages einrichten | 🔄 Workflow fertig (`.github/workflows/pages.yml`); **Chris muss einmalig in den Repo-Einstellungen Pages auf „GitHub Actions“ stellen** |
 | Konverter | STL/OBJ einlesen, Dreiecke reduzieren, GLB schreiben | ⏳ offen |
 | Konverter | Instanzen für gleiche Teile, Option „unvereinfacht“ | ⏳ offen |
 | Test | Prüfkörper in `samples/` erstellen | ✅ erledigt (`samples/generate.py`) |
@@ -28,6 +28,8 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 
 ## Offene Punkte
 
+- **GitHub Pages aktivieren (Chris):** Repository → Settings → Pages → „Build and deployment“ → Source **GitHub Actions**. Danach den Workflow „Viewer veröffentlichen“ unter Actions einmal per „Run workflow“ starten (oder die nächste Änderung an `viewer/` pushen). Adresse: https://chris01-byte.github.io/quest-cad-viewer/
+- Vorschlag (nicht umgesetzt): ein zweiter Workflow führt die Headless-Tests (`tests/`) bei jedem Push aus, damit kein defekter Stand veröffentlicht wird.
 - **XR: Dateien laden im Headset** geht im Browser nicht (kein Datei-Dialog in einer immersiven Session). Heute: Dateien vor dem Start öffnen, das Panel weist darauf hin. Vorschlag: zuletzt geöffnete Modelle im Browser (IndexedDB) merken und im Panel zur Auswahl anbieten. Bitte mit Chris klären.
 - **XR: Ablegen auf dem Tisch** nutzt den Hit-Test der Quest (Raumerkennung), sofern der Browser ihn freigibt; sonst die Controller-Höhe. Der Hit-Test ließ sich im Emulator nicht prüfen und ist auf der Quest zu bestätigen.
 - XR: Hand-Tracking ist nicht eingebaut (nur Controller). Die Controller werden als einfache Zylinder gezeichnet, weil die Standard-Modelle von einem CDN geladen würden.
@@ -56,6 +58,7 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | XR-Bedienung: **Grip** = greifen (eine Hand bewegt und dreht, zwei Hände skalieren und drehen, Einrasten auf exakt 1:1 bei ±2 %, Bereich 1 % bis 10 000 %), **Trigger** = Panel-Taste drücken, Messpunkt setzen oder Modell ablegen. Grip auf das Panel zielend greift das Panel. In AR/VR steht das Modell beim Start 1:1, 0,7 m vor dem Gesicht, auf Tischhöhe (0,75 m) bzw. auf dem Boden, wenn es höher als 0,7 m ist | Entspricht ABNAHME V1-11 bis V1-16; Werte (Tischhöhe, Abstand) sind Startannahmen und auf der Quest zu bestätigen |
 | 2026-10-23 | `iwer` (Meta, MIT) als reine **Test-Abhängigkeit** in `tests/package.json`, nicht im Viewer | Emuliert die WebXR-API und erlaubt, die echte Session-Strecke ohne Brille zu testen; wird nicht ausgeliefert |
 | 2026-10-23 | Offline-Fähigkeit über einen Service Worker mit **versioniertem Precache**. `tools/build-pages.mjs` stempelt beim Deploy eine Build-ID in `sw.js` und schreibt `asset-manifest.json` mit allen Dateien. Lokal (`python3 -m http.server`) ist `sw.js` ungestempelt und cached nichts | Keine von Hand gepflegte Dateiliste (vergessene Datei = App startet offline nicht), keine Mischung zweier Versionen, Updates automatisch. Der Viewer-Code selbst bleibt ohne Bundler; nur der Deploy-Schritt kopiert und stempelt. Neuer Ordner `tools/` |
+| 2026-10-23 | Deployment per GitHub-Actions-Workflow (Quelle „GitHub Actions“ statt Branch `gh-pages`), nur bei Änderungen an `viewer/`, `tools/build-pages.mjs` oder dem Workflow selbst | Kein zusätzlicher Branch, der Build-Schritt (Build-ID stempeln) läuft vor dem Veröffentlichen |
 | 2026-10-23 | `last_2mio.stl` (≈ 100 MB) liegt nicht im Repo, sondern wird per `samples/generate.py` erzeugt | öffentliches Repo, GitHub-Dateigrenze, Datei ist in Sekunden reproduzierbar |
 
 ## Änderungsprotokoll
@@ -71,3 +74,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Aufgabe 5: Messen (`viewer/js/measure.js`, `bvh.js`): Punkt–Punkt mit Eckpunkt-Fang, Gummiband mit Live-Abstand, mehrere Messungen, einzeln und alle löschen, M-Taste, Esc bricht ab. Punkte liegen im Modellraum, die Anzeige bleibt auch bei skaliertem Modell die echte Länge. Tests `measure.test.mjs`, `measure-large.test.mjs`, `bvh.test.mjs`: Quader-Kanten 100,0 / 50,0 / 20,0 mm, Bohrung 10,000 mm, Kugel-Sehne 141,42 mm auf 2 Mio. Dreiecken. Abnahmeschritte V1-20 bis V1-22 ergänzt |
 | 2026-10-23 | Aufgabe 6: WebXR (`viewer/js/xr/`): Session-Start AR (Fallback VR), Passthrough, Greifen/Drehen/Skalieren, 1:1, Ablegen, Strahl-Messen, Panel mit allen Funktionen. Tests: `xr.test.mjs` (Logik mit simulierten Controllern) und `xr-session.test.mjs` (echte Session-Strecke im IWER-Emulator, Meta Quest 3). Der Emulator fand zwei Fehler, die die Simulation nicht zeigte: Panel/Modell wurden vor der ersten Kopfpose platziert (Panel unter dem Boden) und die UI-Ebenen hingen von der DOM-Reihenfolge ab. Abnahmeschritte V1-23 bis V1-26 ergänzt. **Nicht geprüft:** echtes Tracking, Passthrough-Qualität, Hit-Test, Leistung auf der Quest |
 | 2026-10-23 | Aufgabe 7: PWA (`viewer/manifest.webmanifest`, `sw.js`, `js/pwa.js`, `icons/`, `tools/make-icons.mjs`, `tools/build-pages.mjs`). Icon: Würfel mit Messstrecke (192, 512, maskable, Apple-Touch). Test `pwa.test.mjs`: Manifest und Icon-Maße, Precache vollständig (35 Dateien, jedes importierte Modul enthalten), Offline-Start mit abgeschaltetem Netz inklusive Modell laden und Messen, Update auf neue Build-ID löscht den alten Cache, Entwicklungsmodus cached nichts, „App installieren“-Button. Zwei Testfehler (async `waitForFunction`) selbst gefunden und behoben |
+| 2026-10-23 | Aufgabe 8: Pages-Workflow `.github/workflows/pages.yml` (Node 22, `tools/build-pages.mjs`, `configure-pages`/`upload-pages-artifact`/`deploy-pages`). Der PWA-Test serviert den Build jetzt unter `/quest-cad-viewer/` wie GitHub Pages: SW-Scope, Offline und Messen funktionieren im Unterpfad. Aktivierung von Pages und erster Lauf stehen noch aus (Repo-Einstellung, nicht per Code möglich) |

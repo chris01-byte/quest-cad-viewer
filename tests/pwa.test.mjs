@@ -43,7 +43,8 @@ check('Build: Dateiliste enthält Seite, Module, three.js, Icons, Manifest – a
   check('Build: jedes importierte Modul steht in der Dateiliste', missing.length === 0, missing.join(', '));
 }
 
-const t = await openViewer({ dir: out });
+// like GitHub Pages: the site lives below /<repository>/, so every URL in the app must be relative
+const t = await openViewer({ dir: out, prefix: '/quest-cad-viewer/' });
 const { page, errors, context } = t;
 await page.evaluate(() => navigator.serviceWorker.ready);
 const cacheState = () => page.evaluate(async () => {
@@ -52,6 +53,7 @@ const cacheState = () => page.evaluate(async () => {
   return { keys, count: cache ? (await cache.keys()).length : 0 };
 });
 let c = await cacheState();
+check('Unterpfad /quest-cad-viewer/: SW-Scope stimmt', await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).scope.endsWith('/quest-cad-viewer/')));
 check('Service Worker aktiv, Cache „qcv-t1“ angelegt', c.keys.join() === 'qcv-t1', c.keys.join());
 check('Cache enthält alle Dateien der Liste', c.count === assets.files.length, `${c.count} von ${assets.files.length}`);
 await page.waitForFunction(() => navigator.serviceWorker.controller);

@@ -16,3 +16,5 @@ node_modules/
 converter/out/
 # Lasttest (≈ 100 MB) wird per samples/generate.py erzeugt
 samples/last_2mio.stl
+# Deploy-Ausgabe (tools/build-pages.mjs)
+_site/

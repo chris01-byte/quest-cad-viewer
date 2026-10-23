@@ -18,10 +18,13 @@ const TYPES = {
   '.svg': 'image/svg+xml', '.glb': 'model/gltf-binary',
 };
 
-export function startServer(dir = VIEWER_DIR) {
+/** Static server for `dir`. With `prefix` (e.g. '/quest-cad-viewer/') the site lives in a sub-path like on GitHub Pages. */
+export function startServer(dir = VIEWER_DIR, prefix = '/') {
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://x');
-    let file = path.join(dir, decodeURIComponent(url.pathname));
+    const requested = decodeURIComponent(url.pathname);
+    if (!requested.startsWith(prefix)) { res.writeHead(404).end('not found'); return; }
+    let file = path.join(dir, requested.slice(prefix.length));
     if (!file.startsWith(dir)) { res.writeHead(403).end(); return; }
     if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
     fs.readFile(file, (err, data) => {
@@ -30,13 +33,13 @@ export function startServer(dir = VIEWER_DIR) {
     });
   });
   return new Promise((resolve) => server.listen(0, '127.0.0.1', () => {
-    resolve({ server, url: `http://127.0.0.1:${server.address().port}/`, close: () => server.close() });
+    resolve({ server, url: `http://127.0.0.1:${server.address().port}${prefix}`, close: () => server.close() });
   }));
 }
 
-/** Opens the viewer (or another build of it via `dir`); collects console errors and page errors in `errors`. With `emulateQuest` a Meta Quest 3 is emulated by IWER (window.__iwer = the XRDevice). */
-export async function openViewer({ viewport = { width: 1280, height: 800 }, emulateQuest = false, dir = VIEWER_DIR } = {}) {
-  const srv = await startServer(dir);
+/** Opens the viewer (or another build of it via `dir`, optionally below a URL `prefix`); collects console errors and page errors in `errors`. With `emulateQuest` a Meta Quest 3 is emulated by IWER (window.__iwer = the XRDevice). */
+export async function openViewer({ viewport = { width: 1280, height: 800 }, emulateQuest = false, dir = VIEWER_DIR, prefix = '/' } = {}) {
+  const srv = await startServer(dir, prefix);
   const browser = await chromium.launch({
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'],
   });
