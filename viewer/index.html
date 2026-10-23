@@ -41,6 +41,16 @@
       <p id="info-warn" class="note warn" hidden></p>
       <p class="note">Maße der sichtbaren Teile in X × Y × Z. Gemessen wird am Dreiecksnetz – Fusion bleibt die Referenz für exakte Maße.</p>
     </section>
+
+    <section id="sec-parts" hidden>
+      <h2>Teile <span id="parts-count" class="count"></span></h2>
+      <div class="row">
+        <button id="btn-parts-all" type="button">Alle ein</button>
+        <button id="btn-parts-none" type="button">Alle aus</button>
+      </div>
+      <input id="parts-filter" type="search" placeholder="Teile filtern …" aria-label="Teile filtern" hidden>
+      <ul id="part-list" class="part-list"></ul>
+    </section>
   </aside>
 
   <div id="hint" class="hint">

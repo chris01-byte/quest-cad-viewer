@@ -5,6 +5,14 @@ import { loadFiles, LoadError } from './loaders.js';
 const viewer = new Viewer(document.getElementById('view'));
 
 const ui = new UI({
+  onPartVisible(ids, visible) {
+    const model = viewer.model;
+    if (!model) return;
+    for (const id of ids) model.setPartVisible(id, visible);
+    ui.syncParts(model);
+    ui.updateModelInfo(model);
+    viewer.requestRender();
+  },
   async onFiles(files) {
     ui.clearToast();
     ui.toast(`Lade ${files.map((f) => f.name).join(', ')} …`, 'info');
@@ -14,6 +22,7 @@ const ui = new UI({
       viewer.setModel(model);
       ui.setGrid(viewer.gridCell);
       ui.showModel(model, files);
+      ui.showParts(model);
       ui.clearToast();
     } catch (e) {
       console.warn(e);

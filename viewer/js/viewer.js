@@ -99,7 +99,7 @@ export class Viewer {
     return decade;
   }
 
-  /** Replace the displayed model (a Model from model.js) or clear it with null. */
+  /** Replace the displayed model (a Model from model.js). */
   setModel(model) {
     if (this.model) {
       this.modelRoot.remove(this.model.root);
@@ -109,14 +109,8 @@ export class Viewer {
     this.modelRoot.scale.setScalar(1);
     this.modelRoot.position.set(0, 0, 0);
     this.modelRoot.quaternion.identity();
-    if (model) {
-      this.modelRoot.add(model.root);
-      this.frameModel();
-    } else {
-      this.#buildGrid(0.1, 10);
-      this.resetCamera();
-    }
-    this.requestRender();
+    this.modelRoot.add(model.root);
+    this.frameModel();
   }
 
   /** Fit camera and grid to the current model. */
@@ -142,14 +136,5 @@ export class Viewer {
     this.camera.updateProjectionMatrix();
     this.controls.update();
     this.requestRender();
-  }
-
-  resetCamera() {
-    this.controls.target.set(0, 0, 0);
-    this.camera.position.set(0.4, 0.3, 0.6);
-    this.camera.near = 0.01;
-    this.camera.far = 50;
-    this.camera.updateProjectionMatrix();
-    this.controls.update();
   }
 }

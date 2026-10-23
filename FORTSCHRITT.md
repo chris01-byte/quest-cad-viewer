@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgaben 1 (Prüfkörper), 2 (Viewer-Grundgerüst) und 3 (Loader) erledigt
+**Stand:** Umsetzung V1 läuft – Aufgaben 1 bis 4 erledigt (Prüfkörper, Grundgerüst, Loader, Teileliste)
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -13,7 +13,7 @@
 | Repo | Struktur, Dokumentation | ✅ erledigt |
 | Viewer | Grundgerüst three.js, Desktop-Ansicht | ✅ erledigt (Szene, Licht, Raster, OrbitControls, Datei öffnen per Dialog und Drag & Drop) |
 | Viewer | Loader STL / OBJ / GLB, Einheiten mm | ✅ erledigt (STL binär + ASCII, OBJ, GLB; mehrere Dateien = mehrere Teile) |
-| Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | 🔄 Maße und Dreiecksanzahl fertig, Teileliste folgt |
+| Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | ✅ erledigt (Maße und Dreiecke passen sich an, Filter ab 12 Teilen) |
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ⏳ offen |
 | Viewer | WebXR: Passthrough, Greifen, Drehen, Skalieren, 1:1 | ⏳ offen |
 | Viewer | PWA (Manifest, Service Worker, Icon) | ⏳ offen |
@@ -58,3 +58,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Aufgabe 1: Prüfkörper-Generator `samples/generate.py` (numpy), `pruefquader.stl/.obj` und `pruefwinkel.glb` erzeugt und unabhängig nachgemessen (100 × 50 × 20 mm, 80 × 60 × 40 mm, Bohrung r = 5,000 mm); `last_2mio.stl` per Skript (2 002 224 Dreiecke) |
 | 2026-10-23 | Aufgabe 2: Viewer-Grundgerüst (`viewer/index.html`, `js/viewer.js`, `js/ui.js`), Rendern nur bei Änderung, adaptives Raster; Headless-Test `tests/viewer-shell.test.mjs` (Playwright). Ein Rasterfehler (12 statt 400 Linien) fiel erst im Screenshot auf, daraufhin Pixelprüfung im Test ergänzt |
 | 2026-10-23 | Aufgabe 3: Loader STL/OBJ/GLB (`viewer/js/loaders.js`, `model.js`), mm → m beim Laden, Modell wird auf dem Raster zentriert, Bounding-Box exakt aus den Vertices der sichtbaren Teile, Dreiecksanzahl mit Warnung ab 1 Mio. Headless-Test `tests/loaders.test.mjs`: Prüfquader 100,0 × 50,0 × 20,0 mm über STL binär, STL ASCII und OBJ; Prüfwinkel 80,0 × 60,0 × 40,0 mm über GLB; `last_2mio.stl` lädt in 3,3 s (Software-WebGL), 2.002.224 Dreiecke, Warnung erscheint |
+| 2026-10-23 | Aufgabe 4: Teileliste mit Checkbox je Teil, „Alle ein/aus“ (wirkt nur auf gefilterte Zeilen), Filterfeld ab 12 Teilen; Maße und Dreiecksanzahl folgen den sichtbaren Teilen. Test `tests/parts.test.mjs`: Schenkel aus → 80,0 × 10,0 × 40,0 mm, Renderer zeichnet 12 statt 540 Dreiecke |

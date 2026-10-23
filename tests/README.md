@@ -14,3 +14,4 @@ Die Skripte starten selbst einen kleinen lokalen Server für `viewer/` und einen
 |---|---|
 | `viewer-shell.test.mjs` | Seite lädt ohne Konsolenfehler, Hinweis „Datei öffnen“, Raster wird gezeichnet, ungültige Datei (V1-01, V1-09) |
 | `loaders.test.mjs` | STL (binär, ASCII), OBJ, GLB, mehrere Dateien, Einheiten und Maße, Fehlerfälle, Lasttest mit `last_2mio.stl` (V1-02, V1-03, V1-04, V1-09) |
+| `parts.test.mjs` | Teileliste: ein-/ausblenden, Maße und Dreiecke passen sich an, „Alle ein/aus“, Filter (V1-05) |

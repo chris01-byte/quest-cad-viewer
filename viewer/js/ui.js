@@ -3,12 +3,14 @@ import { TRIANGLE_TARGET } from './config.js';
 import { fmtBytes, fmtInt, fmtMm } from './format.js';
 
 const $ = (id) => document.getElementById(id);
+const FILTER_FROM = 12; // show the filter field for lists longer than this
 
 /** DOM glue: file selection (dialog + drag & drop), status messages and the info panel. */
 export class UI {
-  /** @param {{onFiles: (files: File[]) => void}} handlers */
-  constructor({ onFiles }) {
+  /** @param {{onFiles: (files: File[]) => void, onPartVisible: (ids: number[], visible: boolean) => void}} handlers */
+  constructor({ onFiles, onPartVisible }) {
     this.onFiles = onFiles;
+    this.onPartVisible = onPartVisible;
     this.toastTimer = null;
 
     const input = $('file-input');
@@ -16,6 +18,13 @@ export class UI {
     input.addEventListener('change', () => {
       if (input.files.length) this.onFiles([...input.files]);
       input.value = ''; // allow re-opening the same file
+    });
+
+    $('btn-parts-all').addEventListener('click', () => this.#setAllParts(true));
+    $('btn-parts-none').addEventListener('click', () => this.#setAllParts(false));
+    $('parts-filter').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      for (const li of $('part-list').children) li.hidden = q !== '' && !li.dataset.name.includes(q);
     });
 
     let dragDepth = 0;
@@ -86,10 +95,52 @@ export class UI {
     warn.textContent = `Achtung: ${fmtInt(visibleTris)} Dreiecke liegen über dem Zielwert von ${fmtInt(TRIANGLE_TARGET)}. Auf der Quest kann das ruckeln – mit dem Konverter verkleinern.`;
   }
 
-  clearModelInfo() {
-    for (const id of ['info-name', 'info-size', 'info-unit', 'info-tris', 'info-bbox']) $(id).textContent = '–';
-    $('info-warn').hidden = true;
-    $('hint').hidden = false;
+  /** Build the part list for a model. Toggling calls onPartVisible; the list stays in sync with `visible`. */
+  showParts(model) {
+    const list = $('part-list');
+    list.replaceChildren();
+    $('sec-parts').hidden = false;
+    $('parts-count').textContent = `(${model.parts.length})`;
+    $('parts-filter').hidden = model.parts.length <= FILTER_FROM;
+    $('parts-filter').value = '';
+    for (const part of model.parts) {
+      const li = document.createElement('li');
+      li.dataset.name = part.name.toLowerCase();
+      li.dataset.id = part.id;
+      const label = document.createElement('label');
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = part.object.visible;
+      box.addEventListener('change', () => this.onPartVisible([part.id], box.checked));
+      const name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = part.name;
+      name.title = part.name;
+      const tris = document.createElement('span');
+      tris.className = 'tris';
+      tris.textContent = fmtInt(part.triangles);
+      label.append(box, name, tris);
+      li.append(label);
+      list.append(li);
+      li.classList.toggle('off', !box.checked);
+    }
+    this.partModel = model;
+  }
+
+  /** Reflect the model's visibility flags in the checkboxes (after bulk changes). */
+  syncParts(model) {
+    for (const li of $('part-list').children) {
+      const visible = model.parts[Number(li.dataset.id)].object.visible;
+      li.querySelector('input').checked = visible;
+      li.classList.toggle('off', !visible);
+    }
+  }
+
+  #setAllParts(visible) {
+    if (!this.partModel) return;
+    // respect the filter: only touch rows that are currently shown
+    const ids = [...$('part-list').children].filter((li) => !li.hidden).map((li) => Number(li.dataset.id));
+    this.onPartVisible(ids, visible);
   }
 }
 
