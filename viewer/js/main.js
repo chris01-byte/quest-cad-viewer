@@ -1,23 +1,28 @@
 import { Viewer } from './viewer.js';
-import { UI, isSupported, extensionOf } from './ui.js';
+import { UI } from './ui.js';
+import { loadFiles, LoadError } from './loaders.js';
 
 const viewer = new Viewer(document.getElementById('view'));
 
 const ui = new UI({
-  onFiles(files) {
+  async onFiles(files) {
     ui.clearToast();
-    const bad = files.filter((f) => !isSupported(f.name));
-    if (bad.length) {
-      const exts = [...new Set(bad.map((f) => (extensionOf(f.name) ? `„.${extensionOf(f.name)}“` : 'ohne Endung')))];
-      ui.toast(`Dateityp ${exts.join(', ')} wird nicht unterstützt. Bitte STL, OBJ oder GLB öffnen (${bad.map((f) => f.name).join(', ')}).`);
-      return;
+    ui.toast(`Lade ${files.map((f) => f.name).join(', ')} …`, 'info');
+    await new Promise((resolve) => setTimeout(resolve, 30)); // let the message paint before parsing blocks the thread
+    try {
+      const model = await loadFiles(files);
+      viewer.setModel(model);
+      ui.setGrid(viewer.gridCell);
+      ui.showModel(model, files);
+      ui.clearToast();
+    } catch (e) {
+      console.warn(e);
+      ui.toast(e instanceof LoadError ? e.message : `Unerwarteter Fehler beim Laden: ${e?.message || e}`);
     }
-    ui.showFileInfo(files);
-    ui.toast('Loader folgt im nächsten Schritt.', 'info');
   },
 });
 
 ui.setGrid(viewer.gridCell);
 
 // Test hook for headless tests (tests/), not used by the app itself.
-window.cadViewer = { viewer, ui };
+window.cadViewer = { viewer, ui, get model() { return viewer.model; } };

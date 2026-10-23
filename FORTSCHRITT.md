@@ -1,7 +1,7 @@
 # Fortschritt
 
 **Aktuelle Stufe:** V1 – MVP
-**Stand:** Umsetzung V1 läuft – Aufgaben 1 (Prüfkörper) und 2 (Viewer-Grundgerüst) erledigt
+**Stand:** Umsetzung V1 läuft – Aufgaben 1 (Prüfkörper), 2 (Viewer-Grundgerüst) und 3 (Loader) erledigt
 **Testgerät:** Quest 3 noch nicht vorhanden → Tests vorerst im Desktop-Browser
 
 ## Übersicht V1
@@ -12,8 +12,8 @@
 | Planung | Abnahmeschritte V1 | ✅ erledigt |
 | Repo | Struktur, Dokumentation | ✅ erledigt |
 | Viewer | Grundgerüst three.js, Desktop-Ansicht | ✅ erledigt (Szene, Licht, Raster, OrbitControls, Datei öffnen per Dialog und Drag & Drop) |
-| Viewer | Loader STL / OBJ / GLB, Einheiten mm | ⏳ offen |
-| Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | ⏳ offen |
+| Viewer | Loader STL / OBJ / GLB, Einheiten mm | ✅ erledigt (STL binär + ASCII, OBJ, GLB; mehrere Dateien = mehrere Teile) |
+| Viewer | Bounding-Box-Maße, Teileliste ein-/ausblenden | 🔄 Maße und Dreiecksanzahl fertig, Teileliste folgt |
 | Viewer | Messen Punkt–Punkt mit Eckpunkt-Fang | ⏳ offen |
 | Viewer | WebXR: Passthrough, Greifen, Drehen, Skalieren, 1:1 | ⏳ offen |
 | Viewer | PWA (Manifest, Service Worker, Icon) | ⏳ offen |
@@ -30,6 +30,8 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 
 - Fusion-Export: prüfen, ob OBJ-Export Bauteile als getrennte Gruppen behält (wichtig für Teileliste).
 - Zielwert Dreiecke pro Szene auf der Quest messen, sobald Gerät vorhanden.
+- GLB mit Draco-/Meshopt-/KTX2-Kompression wird nicht gelesen (Meldung statt Absturz). Der Konverter schreibt unkomprimiert.
+- Glatte Schattierung: STL/OBJ werden flach schattiert (Facetten sichtbar). Spätere Option: Glättung mit Kantenwinkel im Konverter.
 - PWA-Installation im Quest-Browser auf dem Gerät bestätigen.
 - Fusion-Achsenrichtung: Fusion exportiert je nach Einstellung Y-oben oder Z-oben, der Viewer (three.js/WebXR) ist Y-oben. Bei Z-oben-Exporten läge das Modell gekippt. Vorschlag: Schalter „Z-oben → Y-oben“ im Viewer. Bitte mit Chris klären, bevor es umgesetzt wird.
 
@@ -44,6 +46,7 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | Entwicklung mit Claude Code lokal auf dem Mac | Konverter und Tests mit echten Fusion-Exporten, lokaler Server, später V2 |
 | 2026-10-23 | three.js 0.186.1 unverändert in `viewer/vendor/three/` (inkl. OrbitControls, STL-/OBJ-/GLTF-Loader). Der `XRControllerModelFactory` fehlt bewusst: Er lädt Controller-Modelle von einem CDN und würde offline nicht funktionieren, die Controller werden in V1 mit eigenen Strahlen dargestellt | PWA muss offline laufen |
 | 2026-10-23 | Datei-Auswahl ohne `accept`-Filter, Prüfung der Endung im Code | Der Android-Dateidialog (Quest-Browser) kann unbekannte Endungen wie `.stl`/`.glb` ausgrauen; so bleibt jede Datei wählbar und die Fehlermeldung kommt von der App |
+| 2026-10-23 | Mehrere gleichzeitig geöffnete Dateien werden zu **einer** Szene, jede Datei ein Teil, Positionen bleiben absolut | Fusion exportiert Körper oft einzeln; so lassen sich Baugruppen aus Einzel-STL zusammenstellen |
 | 2026-10-23 | `last_2mio.stl` (≈ 100 MB) liegt nicht im Repo, sondern wird per `samples/generate.py` erzeugt | öffentliches Repo, GitHub-Dateigrenze, Datei ist in Sekunden reproduzierbar |
 
 ## Änderungsprotokoll
@@ -54,3 +57,4 @@ Legende: ✅ erledigt · 🔄 in Arbeit · ⏳ offen · ❌ blockiert
 | 2026-10-23 | CLAUDE.md mit Projektkontext und Arbeitsregeln für Claude Code ergänzt; Weiterarbeit lokal auf dem Mac |
 | 2026-10-23 | Aufgabe 1: Prüfkörper-Generator `samples/generate.py` (numpy), `pruefquader.stl/.obj` und `pruefwinkel.glb` erzeugt und unabhängig nachgemessen (100 × 50 × 20 mm, 80 × 60 × 40 mm, Bohrung r = 5,000 mm); `last_2mio.stl` per Skript (2 002 224 Dreiecke) |
 | 2026-10-23 | Aufgabe 2: Viewer-Grundgerüst (`viewer/index.html`, `js/viewer.js`, `js/ui.js`), Rendern nur bei Änderung, adaptives Raster; Headless-Test `tests/viewer-shell.test.mjs` (Playwright). Ein Rasterfehler (12 statt 400 Linien) fiel erst im Screenshot auf, daraufhin Pixelprüfung im Test ergänzt |
+| 2026-10-23 | Aufgabe 3: Loader STL/OBJ/GLB (`viewer/js/loaders.js`, `model.js`), mm → m beim Laden, Modell wird auf dem Raster zentriert, Bounding-Box exakt aus den Vertices der sichtbaren Teile, Dreiecksanzahl mit Warnung ab 1 Mio. Headless-Test `tests/loaders.test.mjs`: Prüfquader 100,0 × 50,0 × 20,0 mm über STL binär, STL ASCII und OBJ; Prüfwinkel 80,0 × 60,0 × 40,0 mm über GLB; `last_2mio.stl` lädt in 3,3 s (Software-WebGL), 2.002.224 Dreiecke, Warnung erscheint |

@@ -1,5 +1,6 @@
-import { SUPPORTED_EXTENSIONS } from './config.js';
-import { fmtBytes } from './format.js';
+import { Vector3 } from 'three';
+import { TRIANGLE_TARGET } from './config.js';
+import { fmtBytes, fmtInt, fmtMm } from './format.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -59,22 +60,39 @@ export class UI {
     $('info-grid').textContent = `${cellMetres * 1000} mm`;
   }
 
-  showFileInfo(files) {
-    $('info-name').textContent = files.map((f) => f.name).join(', ');
+  /** Show a freshly loaded model: file facts, unit, triangles, box. */
+  showModel(model, files) {
+    $('info-name').textContent = model.name;
     $('info-size').textContent = fmtBytes(files.reduce((sum, f) => sum + f.size, 0));
+    $('info-unit').textContent = model.sourceUnit;
     $('hint').hidden = true;
+    this.updateModelInfo(model);
+  }
+
+  /** Numbers that change with part visibility: triangles and bounding box. */
+  updateModelInfo(model) {
+    const visibleTris = model.triangleCount({ visibleOnly: true });
+    const all = model.triangleCount();
+    $('info-tris').textContent = visibleTris === all ? fmtInt(all) : `${fmtInt(visibleTris)} von ${fmtInt(all)}`;
+    const box = model.visibleBox();
+    if (box.isEmpty()) {
+      $('info-bbox').textContent = 'keine sichtbaren Teile';
+    } else {
+      const s = box.getSize(new Vector3());
+      $('info-bbox').textContent = `${fmtMm(s.x)} × ${fmtMm(s.y)} × ${fmtMm(s.z)} mm`;
+    }
+    const warn = $('info-warn');
+    warn.hidden = visibleTris <= TRIANGLE_TARGET;
+    warn.textContent = `Achtung: ${fmtInt(visibleTris)} Dreiecke liegen über dem Zielwert von ${fmtInt(TRIANGLE_TARGET)}. Auf der Quest kann das ruckeln – mit dem Konverter verkleinern.`;
+  }
+
+  clearModelInfo() {
+    for (const id of ['info-name', 'info-size', 'info-unit', 'info-tris', 'info-bbox']) $(id).textContent = '–';
+    $('info-warn').hidden = true;
+    $('hint').hidden = false;
   }
 }
 
 function hasFiles(e) {
   return e.dataTransfer && [...e.dataTransfer.types].includes('Files');
-}
-
-export function extensionOf(name) {
-  const dot = name.lastIndexOf('.');
-  return dot < 0 ? '' : name.slice(dot + 1).toLowerCase();
-}
-
-export function isSupported(name) {
-  return SUPPORTED_EXTENSIONS.includes(extensionOf(name));
 }
